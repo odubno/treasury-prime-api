@@ -42,7 +42,7 @@ class TreasuryPrimeAPI(object):
         """
         if person_application:
             person_application_res = send_person_application(self._session, person_application)
-            pass
+            return person_application_res
         elif business:
             pass
         else:

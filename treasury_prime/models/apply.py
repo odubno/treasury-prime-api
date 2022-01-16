@@ -25,7 +25,7 @@ class PersonApplication:
     tin: int
 
 
-def get_person_application(s: requests.Session, person_application_id: str):
+def get_person_application(s: requests.Session, person_application_id: str) -> json:
     """
     Retrieve a Person Application
     https://developers.treasuryprime.com/docs/person-application#retrieve-a-person-application
@@ -34,7 +34,7 @@ def get_person_application(s: requests.Session, person_application_id: str):
     return person_application.json()
 
 
-def get_person_applications(s: requests.Session):
+def get_person_applications(s: requests.Session) -> json:
     """
     List All Person Applications
     https://developers.treasuryprime.com/docs/person-application#list-all-person-applications
@@ -43,7 +43,7 @@ def get_person_applications(s: requests.Session):
     return person_applications.json()['data']
 
 
-def send_person_application(s: requests.Session, application: PersonApplication):
+def send_person_application(s: requests.Session, application: PersonApplication) -> json:
     data = dataclasses.asdict(application)
     person_application = s.get(SANDBOX + f'/apply/person_application', data=json.dumps(data))
     return person_application.json()['data']
