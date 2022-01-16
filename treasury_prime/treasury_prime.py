@@ -2,6 +2,7 @@ import requests
 from treasury_prime import config
 from treasury_prime.models.book import book_transfer_request, book_transfer_is_successful
 from treasury_prime.models.account import get_account
+from treasury_prime.models.apply import send_person_application, PersonApplication
 
 
 class TreasuryPrimeAPI(object):
@@ -32,6 +33,20 @@ class TreasuryPrimeAPI(object):
         if not book_transfer_is_successful(self._session, book_body['id']):
             raise Exception('Book Transfer is still in pending')
         return True
+
+    def apply(self, person_application: PersonApplication = None, business: bool = False):
+        """
+        Apply to open a new bank account, or apply to add additional authorized users to an existing account
+        Send emails for application approval/denial
+        https://developers.treasuryprime.com/docs/apply
+        """
+        if person_application:
+            person_application_res = send_person_application(self._session, person_application)
+            pass
+        elif business:
+            pass
+        else:
+            raise Exception("apply must include an arg for either person or business")
 
     def ach_transfer(self):
         """

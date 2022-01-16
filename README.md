@@ -6,4 +6,4 @@ Treasury Prime Python API
 Following Sandbox docs for https://developers.treasuryprime.com/docs/
 
 `pip3 install -r requirements`
-`pytest tests`
+`make test`
