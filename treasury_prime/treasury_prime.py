@@ -1,13 +1,15 @@
 import requests
-import json
 from typing import List
 from treasury_prime import config
 from treasury_prime.models.book import book_transfer_request, book_transfer_is_successful
-from treasury_prime.models.account import get_account
+from treasury_prime.models.account import get_account, get_account_product
+from treasury_prime.models.person import get_person_information
 from treasury_prime.models.apply import (
-    send_person_application,
-    PersonApplication,
+    create_person_application,
+    create_personal_account_application,
 )
+from treasury_prime.models.dataclass_types.person_application_type import PersonApplication
+from treasury_prime.models.dataclass_types.account_application_type import AccountApplication
 
 
 class TreasuryPrimeAPI(object):
@@ -18,6 +20,9 @@ class TreasuryPrimeAPI(object):
         self._session.headers = {
             'Content-Type': 'application/json'
         }
+
+    def get_person_information(self, person_id: str):
+        return get_person_information(self._session, person_id)
 
     def get_balance(self, account_id) -> float:
         account = get_account(self._session, account_id)
@@ -55,6 +60,9 @@ class TreasuryPrimeAPI(object):
         # https://developers.sandbox.treasuryprime.com/guides/authorized-users
         pass
 
+    def get_account_product(self, account_type: str):
+        return get_account_product(self._session, account_type)
+
     def apply(self):
         # pass existing session to Apply object
         return self.Apply(self._session)
@@ -74,7 +82,7 @@ class TreasuryPrimeAPI(object):
             """
 
             """
-            return send_person_application(self._session, data)
+            return create_person_application(self._session, data)
 
         def business_application(self):
             pass
@@ -87,9 +95,9 @@ class TreasuryPrimeAPI(object):
             """
             pass
 
-        def create_account_application(self):
+        def create_personal_account_application(self, data: AccountApplication):
             """
                 Create an application for a new bank account
                 https://developers.treasuryprime.com/docs/account-application#create-an-account-application
             """
-            pass
+            return create_personal_account_application(self._session, data)

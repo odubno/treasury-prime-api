@@ -2,27 +2,9 @@ import dataclasses
 import json
 from treasury_prime.config import SANDBOX
 import requests
-
-
-@dataclasses.dataclass
-class Address:
-    street_line_1: str
-    street_line_2: str
-    city: str
-    state: str
-    postal_code: int
-
-
-@dataclasses.dataclass
-class PersonApplication:
-    citizenship: str
-    date_of_birth: str
-    email_address: str
-    first_name: str
-    last_name: str
-    phone_number: int
-    physical_address: Address
-    tin: int
+from typing import Dict
+from treasury_prime.models.dataclass_types.account_application_type import AccountApplication
+from treasury_prime.models.dataclass_types.person_application_type import PersonApplication
 
 
 def get_person_application(s: requests.Session, person_application_id: str) -> json:
@@ -43,7 +25,16 @@ def get_person_applications(s: requests.Session) -> json:
     return person_applications.json()['data']
 
 
-def send_person_application(s: requests.Session, data: PersonApplication) -> json:
+def create_person_application(s: requests.Session, data: PersonApplication) -> json:
     data = dataclasses.asdict(data)
     person_application = s.get(SANDBOX + f'/apply/person_application', data=json.dumps(data))
     return person_application.json()['data']
+
+
+def create_personal_account_application(s: requests.Session, data: AccountApplication) -> Dict:
+    """
+        https://developers.sandbox.treasuryprime.com/docs/account-application#create-an-account-application
+    """
+    data = dataclasses.asdict(data)
+    account_application = s.post(SANDBOX + '/apply/account_application', data=json.dumps(data))
+    return account_application.json()
