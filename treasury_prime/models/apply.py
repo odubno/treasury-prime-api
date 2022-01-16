@@ -43,7 +43,7 @@ def get_person_applications(s: requests.Session) -> json:
     return person_applications.json()['data']
 
 
-def send_person_application(s: requests.Session, application: PersonApplication) -> json:
-    data = dataclasses.asdict(application)
+def send_person_application(s: requests.Session, data: PersonApplication) -> json:
+    data = dataclasses.asdict(data)
     person_application = s.get(SANDBOX + f'/apply/person_application', data=json.dumps(data))
     return person_application.json()['data']

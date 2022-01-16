@@ -23,6 +23,8 @@ person_application = apply.PersonApplication(
         state='Texas',
         postal_code=77005,
     ),
+    # tin beginning with 1 will automatically approve application
+    # https://developers.treasuryprime.com/docs/apply-testing#personal-applications
     tin=123456789,
 )
-r.apply(person_application=person_application)
+r.apply().person_application(data=person_application)

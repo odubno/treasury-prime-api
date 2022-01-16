@@ -88,4 +88,4 @@ def test_apply_person_application_is_successful():
         ),
         tin=123456789,
     )
-    tp.apply(person_application=data)
+    tp.apply().person_application(data=data)

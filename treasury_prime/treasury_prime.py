@@ -1,8 +1,13 @@
 import requests
+import json
+from typing import List
 from treasury_prime import config
 from treasury_prime.models.book import book_transfer_request, book_transfer_is_successful
 from treasury_prime.models.account import get_account
-from treasury_prime.models.apply import send_person_application, PersonApplication
+from treasury_prime.models.apply import (
+    send_person_application,
+    PersonApplication,
+)
 
 
 class TreasuryPrimeAPI(object):
@@ -34,20 +39,6 @@ class TreasuryPrimeAPI(object):
             raise Exception('Book Transfer is still in pending')
         return True
 
-    def apply(self, person_application: PersonApplication = None, business: bool = False):
-        """
-        Apply to open a new bank account, or apply to add additional authorized users to an existing account
-        Send emails for application approval/denial
-        https://developers.treasuryprime.com/docs/apply
-        """
-        if person_application:
-            person_application_res = send_person_application(self._session, person_application)
-            return person_application_res
-        elif business:
-            pass
-        else:
-            raise Exception("apply must include an arg for either person or business")
-
     def ach_transfer(self):
         """
         An Automated Clearing House (ACH) transfer is an electronic funds transfer between two accounts at different banks.
@@ -64,3 +55,41 @@ class TreasuryPrimeAPI(object):
         # https://developers.sandbox.treasuryprime.com/guides/authorized-users
         pass
 
+    def apply(self):
+        # pass existing session to Apply object
+        return self.Apply(self._session)
+
+    class Apply:
+
+        """
+            Apply to open a new bank account, or apply to add additional authorized users to an existing account
+            Send emails for application approval/denial
+            https://developers.treasuryprime.com/docs/apply
+        """
+
+        def __init__(self, _session):
+            self._session = _session
+
+        def person_application(self, data: PersonApplication) -> List:
+            """
+
+            """
+            return send_person_application(self._session, data)
+
+        def business_application(self):
+            pass
+
+        def additional_person_application(self):
+            """
+                Add additional people to an account that has already been opened by
+                associating a person_application_id with an account_id
+                https://developers.treasuryprime.com/docs/additional-person-application
+            """
+            pass
+
+        def create_account_application(self):
+            """
+                Create an application for a new bank account
+                https://developers.treasuryprime.com/docs/account-application#create-an-account-application
+            """
+            pass
