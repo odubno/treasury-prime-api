@@ -72,38 +72,40 @@ class TreasuryPrimeAPI(object):
         return get_account_product(self._session, account_type)
 
     def apply(self):
-        # pass existing session to Apply object
-        return self.Apply(self._session)
+        # pass existing session to _Apply object
+        return _Apply(self._session)
 
-    class Apply:
 
+class _Apply:
+
+    """
+    _Apply is a local class object to carry out functionality around adding a new bank account
+    or apply to add additional authorized users to an existing account
+    Send emails for application approval/denial
+    https://developers.treasuryprime.com/docs/apply
+    """
+
+    def __init__(self, _session):
+        self._session = _session
+
+    def person_application(self, data: PersonApplication) -> List:
+        """ """
+        return create_person_application(self._session, data)
+
+    def business_application(self):
+        pass
+
+    def additional_person_application(self):
         """
-        Apply to open a new bank account, or apply to add additional authorized users to an existing account
-        Send emails for application approval/denial
-        https://developers.treasuryprime.com/docs/apply
+        Add additional people to an account that has already been opened by
+        associating a person_application_id with an account_id
+        https://developers.treasuryprime.com/docs/additional-person-application
         """
+        pass
 
-        def __init__(self, _session):
-            self._session = _session
-
-        def person_application(self, data: PersonApplication) -> List:
-            """ """
-            return create_person_application(self._session, data)
-
-        def business_application(self):
-            pass
-
-        def additional_person_application(self):
-            """
-            Add additional people to an account that has already been opened by
-            associating a person_application_id with an account_id
-            https://developers.treasuryprime.com/docs/additional-person-application
-            """
-            pass
-
-        def create_personal_account_application(self, data: AccountApplication):
-            """
-            Create an application for a new bank account
-            https://developers.treasuryprime.com/docs/account-application#create-an-account-application
-            """
-            return create_personal_account_application(self._session, data)
+    def create_personal_account_application(self, data: AccountApplication):
+        """
+        Create an application for a new bank account
+        https://developers.treasuryprime.com/docs/account-application#create-an-account-application
+        """
+        return create_personal_account_application(self._session, data)
