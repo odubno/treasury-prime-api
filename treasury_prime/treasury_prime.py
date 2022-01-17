@@ -5,11 +5,13 @@ from treasury_prime.models.book import (
     book_transfer_request,
     book_transfer_is_successful,
 )
-from treasury_prime.models.account import get_account, get_account_product
+from treasury_prime.models.account import get_account, get_account_product, get_accounts
 from treasury_prime.models.person import get_person_information
 from treasury_prime.models.apply import (
     create_person_application,
     create_personal_account_application,
+    create_deposit,
+    Deposit,
 )
 from treasury_prime.models.dataclass_types.person_application_type import (
     PersonApplication,
@@ -31,6 +33,9 @@ class TreasuryPrimeAPI(object):
     def get_balance(self, account_id) -> float:
         account = get_account(self._session, account_id)
         return float(account["available_balance"])
+
+    def get_accounts(self):
+        return get_accounts(self._session)
 
     def book_transfer(
         self, from_account_id: str, to_account_id: str, amount: float
@@ -68,8 +73,8 @@ class TreasuryPrimeAPI(object):
         # https://developers.sandbox.treasuryprime.com/guides/authorized-users
         pass
 
-    def get_account_product(self, account_type: str):
-        return get_account_product(self._session, account_type)
+    def get_account_product(self, account_type: str, ownership_type: str):
+        return get_account_product(self._session, account_type, ownership_type)
 
     def apply(self):
         # pass existing session to _Apply object
@@ -109,3 +114,6 @@ class _Apply:
         https://developers.treasuryprime.com/docs/account-application#create-an-account-application
         """
         return create_personal_account_application(self._session, data)
+
+    def create_deposit(self, data: Deposit):
+        return create_deposit(self._session, data)

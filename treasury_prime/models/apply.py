@@ -11,6 +11,22 @@ from treasury_prime.models.dataclass_types.person_application_type import (
 )
 
 
+@dataclasses.dataclass
+class Ach:
+    # use string types to account for any leading zeros
+    account_number: str
+    account_type: str
+    routing_number: str
+
+
+@dataclasses.dataclass
+class Deposit:
+    # amount is double decimal; easier to define it as a string
+    amount: str
+    ach: Ach
+    name_on_account: str
+
+
 def get_person_application(s: requests.Session, person_application_id: str) -> json:
     """
     Retrieve a Person Application
@@ -50,3 +66,9 @@ def create_personal_account_application(
         SANDBOX + "/apply/account_application", data=json.dumps(data)
     )
     return account_application.json()
+
+
+def create_deposit(s: requests.Session, data: Deposit) -> Dict:
+    data = dataclasses.asdict(data)
+    deposit = s.post(SANDBOX + "/apply/deposit", data=json.dumps(data))
+    return deposit.json()
